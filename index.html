@@ -18,15 +18,15 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; scrollbar-width: none; }
-.tabs::-webkit-scrollbar { display: none; }
-.tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; font-size: 14px; }
-.tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.page { display: none; padding: 12px; max-width: 1000px; margin: 0 auto; }
-.page.active { display: block; }
-.grid { display: grid; gap: 12px; }
-.grid-2 { grid-template-columns: 1fr 1fr; }
-.card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border); }
+ .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; scrollbar-width: none; }
+ .tabs::-webkit-scrollbar { display: none; }
+ .tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; font-size: 14px; }
+ .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+ .page { display: none; padding: 12px; max-width: 1000px; margin: 0 auto; }
+ .page.active { display: block; }
+ .grid { display: grid; gap: 12px; }
+ .grid-2 { grid-template-columns: 1fr 1fr; }
+ .card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border); }
   input, button, select, textarea { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; background: var(--bg); color: var(--text); }
   button { background: var(--accent); color: #fff; font-weight: 600; border: none; cursor: pointer; }
   button:active { opacity: 0.8; }
@@ -34,31 +34,30 @@
   button.danger { background: var(--danger); }
   button.success { background: #10b981; }
 
-.category-header { background: var(--accent); color: #fff; padding: 10px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
-.product-btn { padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); }
-.product-btn:active { background: var(--bg); }
-.product-btn.name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
-.product-btn.price { font-size: 13px; color: var(--muted); }
+ .category-header { background: var(--accent); color: #fff; padding: 10px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+ .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+ .product-btn { padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); }
+ .product-btn:active { background: var(--bg); }
+ .product-btn.name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+ .product-btn.price { font-size: 13px; color: var(--muted); }
 
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
 
   @media (max-width: 768px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .table-mobile { display: none; }
-  .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-  .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-  .card-mobile-label { color: var(--muted); font-size: 12px; }
+   .grid-2 { grid-template-columns: 1fr; }
+   .table-mobile { display: none; }
+   .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+   .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+   .card-mobile-label { color: var(--muted); font-size: 12px; }
   }
   @media (min-width: 769px) {.card-mobile { display: none; } }
 
-.right { text-align: right; }
-.badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; background: var(--warn); color: #000; }
+ .right { text-align: right; }
+ .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; background: var(--warn); color: #000; }
   #reader { width: 100%; border-radius: 8px; overflow: hidden; margin: 8px 0; }
-.empty { text-align: center; color: var(--muted); padding: 20px; }
+ .empty { text-align: center; color: var(--muted); padding: 20px; }
 
-  /* Struk full layar HP */
   #modalStruk {
     display: none;
     position: fixed;
@@ -69,7 +68,7 @@
     overflow-y: auto;
   }
 
-.struk-screen {
+ .struk-screen {
     background: #fff;
     color: #000;
     padding: 20px 16px;
@@ -78,18 +77,17 @@
     font-size: 14px;
     line-height: 1.7;
   }
-.struk-screen.center { text-align: center; }
-.struk-screen.line { border-top: 1px dashed #000; margin: 10px 0; }
-.struk-screen.row {
+ .struk-screen.center { text-align: center; }
+ .struk-screen.line { border-top: 1px dashed #000; margin: 10px 0; }
+ .struk-screen.row {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 8px;
     margin: 6px 0;
   }
-.struk-screen.row span { word-break: break-word; }
-.struk-screen b { font-size: 17px; }
+ .struk-screen.row span { word-break: break-word; }
+ .struk-screen b { font-size: 17px; }
 
-  /* Print thermal 58mm */
   #struk { display: none; }
   @media print {
     @page { margin: 0; size: 58mm auto; }
@@ -138,6 +136,7 @@
       <div class="card">
         <h4 style="margin-top:0;">Produk</h4>
         <button onclick="startScan()">📷 Scan Barcode</button>
+        <button class="ghost" onclick="stopScan()" id="btnStopScan" style="display:none; margin-top:8px;">Stop Scan</button>
         <div id="reader" style="display:none;"></div>
 
         <button onclick="toggleAddProduct()">+ Tambah Produk</button>
@@ -161,7 +160,7 @@
           <button class="ghost" onclick="toggleAddProduct()">Batal</button>
         </div>
 
-        <input id="searchProduk" placeholder="Cari nama produk..." oninput="renderQuickProducts()" style="margin-top:12px;">
+        <input id="searchProduk" placeholder="Cari nama produk atau barcode..." oninput="renderQuickProducts()" style="margin-top:12px;">
         <div id="quickProducts" style="margin-top:12px;"></div>
       </div>
     </div>
@@ -274,18 +273,59 @@ function toggleAddProduct() {
   const form = document.getElementById('addProductForm');
   form.style.display = form.style.display === 'none'? 'block' : 'none';
 }
-  function startScan() {
-  document.getElementById('reader').style.display = 'block';
+
+async function startScan() {
+  const readerDiv = document.getElementById('reader');
+  const btnStop = document.getElementById('btnStopScan');
+
+  if (location.protocol!== 'https:' && location.hostname!== 'localhost') {
+    alert('Scan barcode butuh HTTPS. Buka lewat https://semb-commits.github.io/Kasir/');
+    return;
+  }
+
+  readerDiv.style.display = 'block';
+  btnStop.style.display = 'block';
+
+  if (html5QrCode) {
+    await html5QrCode.stop().catch(()=>{});
+  }
+
   html5QrCode = new Html5Qrcode("reader");
-  html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
-    (decodedText) => {
-      document.getElementById('searchProduk').value = decodedText;
-      renderQuickProducts();
-      html5QrCode.stop();
-      document.getElementById('reader').style.display = 'none';
-    },
-    (err) => {}
-  );
+
+  try {
+    await html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: {width: 250, height: 150} },
+      (decodedText) => {
+        document.getElementById('searchProduk').value = decodedText;
+        renderQuickProducts();
+        stopScan();
+
+        const p = produk.find(x => x.barcode === decodedText);
+        if (p) {
+          tambahKeKeranjang(decodedText);
+          alert('Produk ' + p.nama + ' ditambahkan ke keranjang');
+        } else {
+          alert('Barcode ' + decodedText + ' belum terdaftar. Silakan tambah produk.');
+          document.getElementById('pBarcode').value = decodedText;
+          toggleAddProduct();
+        }
+      },
+      (err) => {}
+    );
+  } catch (err) {
+    alert('Gagal buka kamera: ' + err.message + '\n\nCek izin kamera di browser HP kamu.');
+    readerDiv.style.display = 'none';
+    btnStop.style.display = 'none';
+  }
+}
+
+async function stopScan() {
+  if (html5QrCode) {
+    await html5QrCode.stop().catch(()=>{});
+    document.getElementById('reader').style.display = 'none';
+    document.getElementById('btnStopScan').style.display = 'none';
+  }
 }
 
 function renderQuickProducts() {
@@ -294,7 +334,7 @@ function renderQuickProducts() {
 
   const filtered = produk.filter(p =>
     p.stok > 0 && p.nama && p.nama.trim()!== '' &&!isNaN(p.harga) && p.harga > 0 &&
-    p.nama.toLowerCase().includes(search)
+    (p.nama.toLowerCase().includes(search) || p.barcode.toLowerCase().includes(search))
   );
 
   if (filtered.length === 0) {
@@ -465,7 +505,7 @@ function checkout() {
   showStrukScreen(trx);
   resetKeranjang();
   renderQuickProducts();
-  }
+}
   function showStrukScreen(trx) {
   const tgl = new Date(trx.waktu).toLocaleString('id-ID');
   const tglSplit = tgl.split(' ');
