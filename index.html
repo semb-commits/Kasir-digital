@@ -45,11 +45,11 @@
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
 
   @media (max-width: 768px) {
-.grid-2 { grid-template-columns: 1fr; }
-.table-mobile { display: none; }
-.card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-.card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-.card-mobile-label { color: var(--muted); font-size: 12px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .table-mobile { display: none; }
+  .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+  .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .card-mobile-label { color: var(--muted); font-size: 12px; }
   }
   @media (min-width: 769px) {.card-mobile { display: none; } }
 
@@ -58,55 +58,63 @@
   #reader { width: 100%; border-radius: 8px; overflow: hidden; margin: 8px 0; }
 .empty { text-align: center; color: var(--muted); padding: 20px; }
 
-/* Struk full layar HP */
-#modalStruk {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: #fff;
-  z-index: 100;
-  overflow-y: auto;
-}
+  /* Struk full layar HP */
+  #modalStruk {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #fff;
+    z-index: 100;
+    overflow-y: auto;
+  }
 
 .struk-screen {
-  background: #fff;
-  color: #000;
-  padding: 20px 16px;
-  width: 100%;
-  font-family: 'Courier New', monospace;
-  font-size: 15px;
-  line-height: 1.6;
-}
+    background: #fff;
+    color: #000;
+    padding: 20px 16px;
+    width: 100%;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+  }
 .struk-screen.center { text-align: center; }
-.struk-screen.line { border-top: 1px dashed #000; margin: 12px 0; }
+.struk-screen.line { border-top: 1px dashed #000; margin: 10px 0; }
 .struk-screen.row {
-  display: flex;
-  justify-content: space-between;
-  margin: 6px 0;
-  gap: 10px;
-}
-.struk-screen.row span:first-child {
-  flex: 1;
-  word-wrap: break-word;
-}
-.struk-screen.row span:last-child {
-  flex-shrink: 0;
-  text-align: right;
-}
-.struk-screen b { font-size: 18px; }
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    margin: 6px 0;
+  }
+.struk-screen.row span { word-break: break-word; }
+.struk-screen b { font-size: 17px; }
 
-/* Print thermal 58mm */
-#struk { display: none; }
+  /* Print thermal 58mm */
+  #struk { display: none; }
   @media print {
     @page { margin: 0; size: 58mm auto; }
     body * { visibility: hidden; }
     #struk, #struk * { visibility: visible; }
-    #struk { position: absolute; left: 0; top: 0; width: 58mm; font-family: 'Courier New', monospace; font-size: 11px; color: #000; background: #fff; display: block; padding: 2mm; }
+    #struk {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 58mm;
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      color: #000;
+      background: #fff;
+      display: block;
+      padding: 0;
+    }
+    #struk.center { text-align: center; }
+    #struk.line { border-top: 1px dashed #000; margin: 4px 0; }
+    #struk.row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 5px;
+    }
   }
-  #struk.center { text-align: center; }
-  #struk.line { border-top: 1px dashed #000; margin: 4px 0; }
-  #struk.row { display: flex; justify-content: space-between; gap: 5px; }
 </style>
 </head>
 <body data-theme="dark">
@@ -163,7 +171,8 @@
       <table id="keranjang" class="table-mobile"><tbody></tbody></table>
       <div id="keranjangMobile"></div>
       <div class="empty" id="emptyCart">Keranjang masih kosong</div>
-            <div style="margin-top:12px;">
+
+      <div style="margin-top:12px;">
         <div class="right" style="font-size:20px; font-weight:bold;">Total: Rp <span id="total">0</span></div>
         <div class="card" style="margin-top:12px;">
           <h4 style="margin-top:0;">Metode Bayar</h4>
@@ -265,8 +274,7 @@ function toggleAddProduct() {
   const form = document.getElementById('addProductForm');
   form.style.display = form.style.display === 'none'? 'block' : 'none';
 }
-
-function startScan() {
+  function startScan() {
   document.getElementById('reader').style.display = 'block';
   html5QrCode = new Html5Qrcode("reader");
   html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
@@ -358,7 +366,8 @@ function editHarga(barcode) {
     alert('Harga diupdate');
   }
 }
-  function hapusProduk(barcode) {
+
+function hapusProduk(barcode) {
   if (!confirm('Hapus produk ini?')) return;
   produk = produk.filter(p => p.barcode!== barcode);
   localStorage.setItem('produk', JSON.stringify(produk));
@@ -426,10 +435,9 @@ function toggleQRIS() {
   const metode = document.getElementById('metodeBayar').value;
   document.getElementById('qrisBox').style.display = metode === 'qris'? 'block' : 'none';
   document.getElementById('cashBox').style.display = metode === 'cash'? 'block' : 'none';
-  if (metode === 'qris') {
-    let qrisString = setting.qris || '00020101021226670016COM.NOBUBANK.WWW01189360050300000879020814910012150894000303150121230007ID1024440746601050313ID5910Toko Anis6007Jakarta61051234562070703A016304B15D';
-    QRCode.toDataURL(qrisString, { width: 180 }, (err, url) => {
-      document.getElementById('qrisImg').src = url;
+  if (metode === 'qris' && setting.qris) {
+    QRCode.toDataURL(setting.qris, { width: 180 }, (err, url) => {
+      if(!err) document.getElementById('qrisImg').src = url;
     });
   }
 }
@@ -457,18 +465,90 @@ function checkout() {
   showStrukScreen(trx);
   resetKeranjang();
   renderQuickProducts();
-}
-
-function showStrukScreen(trx) {
+  }
+  function showStrukScreen(trx) {
   const tgl = new Date(trx.waktu).toLocaleString('id-ID');
+  const tglSplit = tgl.split(' ');
+
   let itemsHtml = '';
   trx.items.forEach(i => {
-    itemsHtml += `<div><b>${i.nama}</b></div><div class="row"><span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span><span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span></div><div class="line"></div>`;
+    itemsHtml += `<div><b>${i.nama}</b></div>
+    <div class="row">
+      <span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span>
+      <span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span>
+    </div>
+    <div class="line"></div>`;
   });
 
-  document.getElementById('strukScreen').innerHTML = `<div class="struk-screen"><div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center" style="font-size: 13px;">${setting.link || ''}</div></div>`;
+  document.getElementById('strukScreen').innerHTML = `
+  <div class="struk-screen">
+    <div class="center"><b>${setting.nama || 'TOKO'}</b></div>
+    <div class="center">${setting.alamat || ''}</div>
+    <div class="center">${trx.id}</div>
+    <div class="line"></div>
+    <div class="row">
+      <span>${tglSplit[0]}</span>
+      <span>${setting.nama || 'TOKO'}</span>
+    </div>
+    <div class="row">
+      <span>${tglSplit[1] || ''}</span>
+      <span></span>
+    </div>
+    <div>No.${trx.id.slice(-3)}</div>
+    <div class="line"></div>
+    ${itemsHtml}
+    <div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div>
+    <div class="row"><span>Bayar (${trx.metode.toUpperCase()})</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div>
+    <div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div>
+    <div class="line"></div>
+    <div class="center" style="font-size: 12px;">
+      Link Kritik dan Saran<br>
+      ${setting.link || ''}
+    </div>
+    <div class="center" style="margin-top:8px; font-weight:bold;">
+      KASIR PINTAR
+    </div>
+  </div>`;
 
-  document.getElementById('struk').innerHTML = `<div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div>`;
+  document.getElementById('struk').innerHTML = `
+  <div class="center" style="font-size:13px; font-weight:bold;">${setting.nama || 'TOKO'}</div>
+  <div class="center">${setting.alamat || ''}</div>
+  <div class="center">${trx.id}</div>
+  <div class="line"></div>
+
+  <div class="row">
+    <span>${tglSplit[0]}</span>
+    <span>${setting.nama || 'TOKO'}</span>
+  </div>
+  <div class="row">
+    <span>${tglSplit[1] || ''}</span>
+    <span></span>
+  </div>
+  <div>No.${trx.id.slice(-3)}</div>
+  <div class="line"></div>
+
+  ${trx.items.map(i => `
+  <div><b>${i.nama}</b></div>
+  <div class="row">
+    <span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span>
+    <span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span>
+  </div>
+  <div class="line"></div>
+  `).join('')}
+
+  <div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div>
+  <div class="row"><span>Bayar (${trx.metode.toUpperCase()})</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div>
+  <div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div>
+
+  <div class="center" style="margin-top:8px;">
+    Link Kritik dan Saran<br>
+    ${setting.link || ''}
+  </div>
+
+  <div class="center" style="margin-top:8px;">
+    <div style="font-weight:bold;">KASIR PINTAR</div>
+  </div>
+  `;
 
   document.getElementById('modalStruk').style.display = 'block';
 }
