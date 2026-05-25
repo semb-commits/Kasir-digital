@@ -42,11 +42,11 @@
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
 
   @media (max-width: 768px) {
- .grid-2 { grid-template-columns: 1fr; }
- .table-mobile { display: none; }
- .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
- .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
- .card-mobile-label { color: var(--muted); font-size: 12px; }
+.grid-2 { grid-template-columns: 1fr; }
+.table-mobile { display: none; }
+.card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.card-mobile-label { color: var(--muted); font-size: 12px; }
   }
   @media (min-width: 769px) {.card-mobile { display: none; } }
 
@@ -55,15 +55,16 @@
   #reader { width: 100%; border-radius: 8px; overflow: hidden; margin: 8px 0; }
 .empty { text-align: center; color: var(--muted); padding: 20px; }
 
-/* Struk untuk layar HP */
+/* Struk untuk layar HP - full screen */
 .struk-screen {
   background: #fff;
   color: #000;
   padding: 16px;
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto;
   font-family: 'Courier New', monospace;
   font-size: 14px;
+  line-height: 1.4;
 }
 .struk-screen.center { text-align: center; }
 .struk-screen.line { border-top: 1px dashed #000; margin: 8px 0; }
@@ -330,6 +331,7 @@ function editHarga(barcode) {
     p.harga = parseInt(hargaBaru);
     localStorage.setItem('produk', JSON.stringify(produk));
     renderQuickProducts();
+    renderKeranjang();
     alert('Harga diupdate');
   }
 }
@@ -436,7 +438,6 @@ function showStrukScreen(trx) {
 
   document.getElementById('strukScreen').innerHTML = `<div class="struk-screen"><div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div></div>`;
 
-  // Siapkan juga untuk print thermal
   document.getElementById('struk').innerHTML = `<div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div>`;
 
   document.getElementById('modalStruk').style.display = 'block';
