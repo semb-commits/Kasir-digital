@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Kasir Digital</title>
+<title>Kasir Lokal Pro</title>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <style>
@@ -41,10 +41,13 @@
 
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
+
   @media (max-width: 768px) {
    .grid-2 { grid-template-columns: 1fr; }
    .table-mobile { display: none; }
    .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; overflow: visible; }
+   .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+   .card-mobile-label { color: var(--muted); font-size: 12px; }
   }
   @media (min-width: 769px) {.card-mobile { display: none; } }
 
@@ -160,7 +163,10 @@
     <input id="filterTanggal" type="date">
     <button onclick="renderLaporan()">Filter</button>
     <div id="ringkasanLaporan" style="margin:12px 0;"></div>
-    <table id="tabelLaporan"><thead><tr><th>Waktu</th><th>No</th><th>Item</th><th>Omzet</th><th>HPP</th><th>Laba</th></tr></thead><tbody></tbody></table>
+    <div class="table-mobile">
+      <table id="tabelLaporan"><thead><tr><th>Waktu</th><th>No</th><th>Item</th><th>Omzet</th><th>HPP</th><th>Laba</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div id="laporanMobile"></div>
   </div>
 </div>
 
@@ -206,6 +212,7 @@ function switchTab(id) {
   event.target.classList.add('active');
   if (id === 'produk') renderProduk();
   if (id === 'laporan') renderLaporan();
+  if (id === 'stok') renderStokMenipis();
   if (id === 'kasir') renderQuickProducts();
 }
 
@@ -216,13 +223,12 @@ function toggleTheme() {
 }
 document.body.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
 
-// FIX: Fungsi render quick products
 function renderQuickProducts() {
   const container = document.getElementById('quickProducts');
   if (!container) return;
   container.innerHTML = '';
 
-  const filtered = produk.filter(p => p.stok > 0 && p.nama && p.nama.trim()!== '');
+  const filtered = produk.filter(p => p.stok > 0 && p.nama && p.nama.trim()!== '' &&!isNaN(p.harga) && p.harga > 0);
 
   if (filtered.length === 0) {
     container.innerHTML = '<p class="empty" style="margin-top:10px;">Belum ada produk. Tambah di tab Produk dulu.</p>';
@@ -240,12 +246,7 @@ function renderQuickProducts() {
     container.innerHTML += `<div class="category-header">${kat}</div>`;
     let gridHtml = '<div class="product-grid">';
     grouped[kat].forEach(p => {
-      gridHtml += `
-        <button class="product-btn" onclick="tambahKeKeranjang('${p.barcode}')">
-          <div class="name">${p.nama}</div>
-          <div class="price">Rp ${p.harga.toLocaleString('id-ID')}</div>
-        </button>
-      `;
+      gridHtml += `<button class="product-btn" onclick="tambahKeKeranjang('${p.barcode}')"><div class="name">${p.nama}</div><div class="price">Rp ${Number(p.harga).toLocaleString('id-ID')}</div></button>`;
     });
     gridHtml += '</div>';
     container.innerHTML += gridHtml;
@@ -256,13 +257,15 @@ function simpanProduk() {
   const p = {
     barcode: document.getElementById('pBarcode').value || 'BR' + Date.now(),
     kategori: document.getElementById('pKategori').value || 'Lainnya',
-    nama: document.getElementById('pNama').value,
+    nama: document.getElementById('pNama').value.trim(),
     harga: parseInt(document.getElementById('pHarga').value) || 0,
     modal: parseInt(document.getElementById('pModal').value) || 0,
     stok: parseInt(document.getElementById('pStok').value) || 0,
     minStok: parseInt(document.getElementById('pMinStok').value) || 5
   };
-  if (!p.nama ||!p.harga) return alert('Nama & harga wajib');
+  if (!p.nama) return alert('Nama wajib diisi');
+  if (p.harga <= 0) return alert('Harga harus lebih dari 0');
+  if (p.stok < 0) return alert('Stok tidak boleh minus');
 
   const idx = produk.findIndex(x => x.barcode === p.barcode);
   if (idx >= 0) produk[idx] = p;
@@ -286,21 +289,13 @@ function resetFormProduk() {
 
 function renderProduk() {
   const q = document.getElementById('cariProdukAll').value.toLowerCase();
-  const filtered = produk.filter(p =>
-    p.nama.toLowerCase().includes(q) || p.barcode.includes(q) || p.kategori.toLowerCase().includes(q)
-  );
+  const filtered = produk.filter(p => p.nama.toLowerCase().includes(q) || p.barcode.includes(q) || p.kategori.toLowerCase().includes(q));
 
   const tbody = document.querySelector('#tabelProduk tbody');
   if (tbody) {
     tbody.innerHTML = '';
     filtered.forEach(p => {
-      tbody.innerHTML += `<tr>
-        <td>${p.kategori}</td><td>${p.barcode}</td><td>${p.nama}</td>
-        <td>Rp ${p.harga.toLocaleString('id-ID')}</td>
-        <td>${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</td>
-        <td><button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button>
-        <button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button></td>
-      </tr>`;
+      tbody.innerHTML += `<tr><td>${p.kategori}</td><td>${p.barcode}</td><td>${p.nama}</td><td>Rp ${p.harga.toLocaleString('id-ID')}</td><td>${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</td><td><button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button><button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button></td></tr>`;
     });
   }
 
@@ -308,14 +303,7 @@ function renderProduk() {
   if (mobileDiv) {
     mobileDiv.innerHTML = '';
     filtered.forEach(p => {
-      mobileDiv.innerHTML += `<div class="card-mobile">
-        <div><b>${p.kategori} - ${p.nama}</b></div>
-        <div>Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</div>
-        <div style="display:flex; gap:8px; margin-top:8px;">
-          <button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button>
-          <button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button>
-        </div>
-      </div>`;
+      mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${p.kategori} - ${p.nama}</b></div><div>Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</div><div style="display:flex; gap:8px; margin-top:8px;"><button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button><button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button></div></div>`;
     });
   }
 }
@@ -341,7 +329,6 @@ function hapusProduk(barcode) {
   renderQuickProducts();
 }
 
-// SISA FUNGSI LAINNYA - copy dari kode sebelumnya
 function startScan() {
   document.getElementById('reader').style.display = 'block';
   html5QrCode = new Html5Qrcode("reader");
@@ -362,9 +349,7 @@ function cariProduk() {
   const div = document.getElementById('hasilCari');
   div.innerHTML = '';
   hasil.forEach(p => {
-    div.innerHTML += `<div class="card" style="margin-top:8px; cursor:pointer;" onclick="tambahKeKeranjang('${p.barcode}')">
-      <b>${p.nama}</b><br><small>${p.kategori} - Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok}</small>
-    </div>`;
+    div.innerHTML += `<div class="card" style="margin-top:8px; cursor:pointer;" onclick="tambahKeKeranjang('${p.barcode}')"><b>${p.nama}</b><br><small>${p.kategori} - Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok}</small></div>`;
   });
 }
 
@@ -392,20 +377,8 @@ function renderKeranjang() {
   keranjang.forEach((item, i) => {
     const sub = item.harga * item.qty;
     total += sub;
-    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></td>
-      <td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>
-      ${item.qty}
-      <button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td>
-      <td class="right">Rp ${sub.toLocaleString('id-ID')}</td>
-      <td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
-
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile">
-      <div><b>${item.nama}</b><br><small>${item.kategori}</small></div>
-      <div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span>
-      <span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div>
-      <div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button>
-      <button class="ghost" onclick="ubahQty(${i}, 1)">+</button>
-      <button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
+    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b><br><small>${item.kategori}</small></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
   });
   document.getElementById('total').textContent = total.toLocaleString('id-ID');
   hitungKembalian();
@@ -480,26 +453,9 @@ function cetakStruk(trx) {
   const tgl = new Date(trx.waktu).toLocaleString('id-ID');
   let itemsHtml = '';
   trx.items.forEach(i => {
-    itemsHtml += `<div><b>${i.nama}</b></div>
-      <div class="row"><span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span>
-      <span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span></div>
-      <div class="line"></div>`;
+    itemsHtml += `<div><b>${i.nama}</b></div><div class="row"><span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span><span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span></div><div class="line"></div>`;
   });
-  document.getElementById('struk').innerHTML = `
-    <div class="center"><b>${setting.nama || 'TOKO'}</b></div>
-    <div class="center">${setting.alamat || ''}</div>
-    <div class="center">${trx.id}</div>
-    <div class="line"></div>
-    <div>${tgl}</div>
-    <div>Metode: ${trx.metode.toUpperCase()}</div>
-    <div class="line"></div>
-    ${itemsHtml}
-    <div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div>
-    <div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div>
-    <div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div>
-    <div class="line"></div>
-    <div class="center">${setting.link || ''}</div>
-  `;
+  document.getElementById('struk').innerHTML = `<div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div>`;
   setTimeout(() => window.print(), 100);
 }
 
@@ -507,9 +463,12 @@ function renderLaporan() {
   const filter = document.getElementById('filterTanggal').value;
   const data = filter? transaksi.filter(t => t.waktu.startsWith(filter)) : transaksi;
   let totalOmzet = 0, totalHPP = 0;
+
   const tbody = document.querySelector('#tabelLaporan tbody');
-  if (!tbody) return;
-  tbody.innerHTML = '';
+  if (tbody) tbody.innerHTML = '';
+  const mobileDiv = document.getElementById('laporanMobile');
+  if (mobileDiv) mobileDiv.innerHTML = '';
+
   data.reverse().forEach(t => {
     let hpp = 0;
     t.items.forEach(item => {
@@ -519,21 +478,13 @@ function renderLaporan() {
     const laba = t.total - hpp;
     totalOmzet += t.total;
     totalHPP += hpp;
-    tbody.innerHTML += `<tr>
-      <td>${new Date(t.waktu).toLocaleString('id-ID')}</td>
-      <td>${t.id}</td>
-      <td>${t.items.length} item</td>
-      <td>Rp ${t.total.toLocaleString('id-ID')}</td>
-      <td>Rp ${hpp.toLocaleString('id-ID')}</td>
-      <td>Rp ${laba.toLocaleString('id-ID')}</td>
-    </tr>`;
+    const tgl = new Date(t.waktu).toLocaleString('id-ID');
+
+    if (tbody) tbody.innerHTML += `<tr><td>${tgl}</td><td>${t.id}</td><td>${t.items.length} item</td><td>Rp ${t.total.toLocaleString('id-ID')}</td><td>Rp ${hpp.toLocaleString('id-ID')}</td><td>Rp ${laba.toLocaleString('id-ID')}</td></tr>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div class="card-mobile-row"><span class="card-mobile-label">Tanggal</span><span>${tgl}</span></div><div class="card-mobile-row"><span class="card-mobile-label">No</span><span>${t.id}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Item</span><span>${t.items.length} item</span></div><div class="card-mobile-row"><span class="card-mobile-label">Omzet</span><span>Rp ${t.total.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">HPP</span><span>Rp ${hpp.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Laba</span><span style="color:var(--accent); font-weight:600;">Rp ${laba.toLocaleString('id-ID')}</span></div></div>`;
   });
-  document.getElementById('ringkasanLaporan').innerHTML = `
-    <b>Transaksi:</b> ${data.length} |
-    <b>Omset:</b> Rp ${totalOmset.toLocaleString('id-ID')} |
-    <b>HPP:</b> Rp ${totalHPP.toLocaleString('id-ID')} |
-    <b>Laba:</b> Rp ${(totalOmset - totalHPP).toLocaleString('id-ID')}
-  `;
+
+  document.getElementById('ringkasanLaporan').innerHTML = `<b>Transaksi:</b> ${data.length} | <b>Omzet:</b> Rp ${totalOmzet.toLocaleString('id-ID')} | <b>HPP:</b> Rp ${totalHPP.toLocaleString('id-ID')} | <b>Laba:</b> Rp ${(totalOmzet - totalHPP).toLocaleString('id-ID')}`;
 }
 
 function renderStokMenipis() {
@@ -598,12 +549,7 @@ function resetSemua() {
 }
 
 function simpanSetting() {
-  setting = {
-    nama: document.getElementById('namaToko').value,
-    alamat: document.getElementById('alamatToko').value,
-    link: document.getElementById('linkToko').value,
-    qris: document.getElementById('qrisString').value
-  };
+  setting = { nama: document.getElementById('namaToko').value, alamat: document.getElementById('alamatToko').value, link: document.getElementById('linkToko').value, qris: document.getElementById('qrisString').value };
   localStorage.setItem('setting', JSON.stringify(setting));
   alert('Tersimpan');
 }
@@ -615,11 +561,11 @@ function loadSetting() {
   document.getElementById('qrisString').value = setting.qris || '';
 }
 
-// INIT - PENTING: urutan ini harus gini
+// INIT
 loadSetting();
 renderKeranjang();
 renderProduk();
-renderQuickProducts(); // Ini yang bikin produk muncul di halaman kasir
+renderQuickProducts();
 </script>
 </body>
   </html>
