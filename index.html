@@ -17,26 +17,26 @@
   }
     * { box-sizing: border-box; }
   body {
-    margin: 0; font-family: system-ui, sans-serif;
+    margin: 0; font-family: system-ui, -apple-system, sans-serif;
     background: var(--bg); color: var(--text);
-    transition: 0.2s;
   }
   header {
     display: flex; justify-content: space-between; align-items: center;
     padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 10;
   }
-.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; }
-.tab {
+ .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; }
+ .tab {
     padding: 8px 16px; border-radius: 8px; cursor: pointer;
     background: var(--card); border: 1px solid var(--border); white-space: nowrap;
+    flex-shrink: 0;
   }
-.tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.page { display: none; padding: 16px; max-width: 1000px; margin: 0 auto; }
-.page.active { display: block; }
-.grid { display: grid; gap: 16px; }
-.grid-2 { grid-template-columns: 1fr 1fr; }
-.card {
+ .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+ .page { display: none; padding: 16px; max-width: 1000px; margin: 0 auto; }
+ .page.active { display: block; }
+ .grid { display: grid; gap: 16px; }
+ .grid-2 { grid-template-columns: 1fr 1fr; }
+ .card {
     background: var(--card); padding: 16px; border-radius: 12px;
     border: 1px solid var(--border);
   }
@@ -52,47 +52,74 @@
   button.ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
   button.danger { background: var(--danger); }
   button.warn { background: var(--warn); color: #000; }
+
+  /* Tabel responsif */
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
-.right { text-align: right; }
-.badge {
-    padding: 2px 8px; border-radius: 12px; font-size: 12px;
-    background: var(--warn); color: #000;
+
+  /* Mobile: ganti tabel jadi card */
+  @media (max-width: 768px) {
+   .grid-2 { grid-template-columns: 1fr; }
+   .table-mobile { display: none; }
+   .card-mobile {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+   .card-mobile-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+   .card-mobile-label { color: var(--muted); font-size: 12px; }
   }
-.badge.danger { background: var(--danger); color: #fff; }
+  @media (min-width: 769px) {
+   .card-mobile { display: none; }
+  }
+
+ .right { text-align: right; }
+ .badge {
+    padding: 2px 8px; border-radius: 12px; font-size: 12px;
+    background: var(--warn); color: #000; display: inline-block;
+  }
+ .badge.danger { background: var(--danger); color: #fff; }
   #reader { width: 100%; border-radius: 8px; overflow: hidden; }
  .empty { text-align: center; color: var(--muted); padding: 20px; }
+ .category-header {
+    background: var(--accent); color: #fff;
+    padding: 8px 12px; border-radius: 6px;
+    margin: 12px 0 8px 0; font-weight: 600;
+  }
 
-  /* Struk Print */
+  /* PRINT - PENTING: jangan sembunyikan body */
+  #struk, #label { display: none; }
+
   @media print {
     body * { visibility: hidden; }
-    #struk, #struk * { visibility: visible; }
+    #struk, #struk *, #label, #label * { visibility: visible; }
     #struk {
       position: absolute; left: 0; top: 0; width: 58mm;
       font-family: 'Courier New', monospace; font-size: 11px;
-      color: #000; background: #fff;
+      color: #000; background: #fff; display: block;
     }
-    #label, #label * { visibility: visible; }
     #label {
       position: absolute; left: 0; top: 0; width: 38mm; height: 21mm;
       font-family: sans-serif; font-size: 8px;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
     }
   }
-  #struk, #label { display: none; padding: 4px; }
   #struk.center { text-align: center; }
   #struk.line { border-top: 1px dashed #000; margin: 4px 0; }
   #struk.row { display: flex; justify-content: space-between; }
-
-  @media (max-width: 768px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  }
 </style>
 </head>
 <body data-theme="dark">
 
 <header>
-  <h3 style="margin:0;">Kasir Digital</h3>
+  <h3 style="margin:0;">Kasir Lokal Pro</h3>
   <button class="ghost" onclick="toggleTheme()" style="width:auto;">🌓</button>
 </header>
 
@@ -117,9 +144,10 @@
 
     <div class="card">
       <h4>Keranjang</h4>
-      <table id="keranjang">
+      <table id="keranjang" class="table-mobile">
         <tbody></tbody>
       </table>
+      <div id="keranjangMobile"></div>
       <div class="empty" id="emptyCart">Keranjang masih kosong</div>
 
       <div style="margin-top:12px;">
@@ -154,6 +182,15 @@
 <div id="produk" class="page">
   <div class="card">
     <h4>Tambah / Edit Produk</h4>
+    <select id="pKategori">
+      <option value="">Pilih Kategori</option>
+      <option value="Rokok">Rokok</option>
+      <option value="Mie Instan">Mie Instan</option>
+      <option value="Minuman">Minuman</option>
+      <option value="Makanan">Makanan</option>
+      <option value="Snack">Snack</option>
+      <option value="Lainnya">Lainnya</option>
+    </select>
     <input id="pBarcode" placeholder="Barcode">
     <input id="pNama" placeholder="Nama Produk">
     <input id="pHarga" type="number" placeholder="Harga Jual">
@@ -163,10 +200,17 @@
     <button onclick="simpanProduk()">Simpan Produk</button>
 
     <input id="cariProdukAll" placeholder="Cari produk..." oninput="renderProduk()">
-    <table id="tabelProduk">
-      <thead><tr><th>Barcode</th><th>Nama</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead>
-      <tbody></tbody>
-    </table>
+
+    <!-- Desktop Table -->
+    <div class="table-mobile">
+      <table id="tabelProduk">
+        <thead><tr><th>Kategori</th><th>Barcode</th><th>Nama</th><th>Harga</th><th>Stok</th><th>Aksi</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Mobile Cards -->
+    <div id="produkMobile"></div>
   </div>
 </div>
 
@@ -193,7 +237,7 @@
     <h4 style="margin-top:20px;">Cetak Label Barcode</h4>
     <input id="labelBarcode" placeholder="Pilih produk di bawah">
     <button onclick="cetakLabel()">Cetak Label 38x21mm</button>
-    <div id="listLabel" style="margin-top:10px;"></div>
+    <div id="listLabel"></div>
   </div>
 </div>
 
@@ -210,14 +254,13 @@
 
   <div class="card">
     <h4>Backup & Restore</h4>
-    <p style="font-size:13px; color:var(--muted);">Backup semua data produk, transaksi, setting. Simpan file ini aman-aman.</p>
+    <p style="font-size:13px; color:var(--muted);">Backup semua data produk, transaksi, setting.</p>
     <button onclick="exportData()">Export Backup</button>
     <input type="file" id="importFile" accept=".json" onchange="importData(event)">
     <button class="danger" onclick="resetSemua()">Reset Semua Data</button>
   </div>
 </div>
 
-<!-- STRUK & LABEL -->
 <div id="struk"></div>
 <div id="label"></div>
 
@@ -250,6 +293,7 @@ document.body.setAttribute('data-theme', localStorage.getItem('theme') || 'dark'
 function simpanProduk() {
   const p = {
     barcode: document.getElementById('pBarcode').value || 'BR' + Date.now(),
+    kategori: document.getElementById('pKategori').value || 'Lainnya',
     nama: document.getElementById('pNama').value,
     harga: parseInt(document.getElementById('pHarga').value),
     modal: parseInt(document.getElementById('pModal').value) || 0,
@@ -265,6 +309,11 @@ function simpanProduk() {
   localStorage.setItem('produk', JSON.stringify(produk));
   renderProduk();
   alert('Produk tersimpan');
+  resetFormProduk();
+}
+
+function resetFormProduk() {
+  document.getElementById('pKategori').value = '';
   document.getElementById('pBarcode').value = '';
   document.getElementById('pNama').value = '';
   document.getElementById('pHarga').value = '';
@@ -274,28 +323,67 @@ function simpanProduk() {
 
 function renderProduk() {
   const q = document.getElementById('cariProdukAll').value.toLowerCase();
+  const filtered = produk.filter(p =>
+    p.nama.toLowerCase().includes(q) ||
+    p.barcode.includes(q) ||
+    p.kategori.toLowerCase().includes(q)
+  );
+
+  // Desktop Table
   const tbody = document.querySelector('#tabelProduk tbody');
   tbody.innerHTML = '';
-  produk.filter(p => p.nama.toLowerCase().includes(q) || p.barcode.includes(q))
-  .forEach(p => {
-      tbody.innerHTML += `
-        <tr>
-          <td>${p.barcode}</td>
-          <td>${p.nama}</td>
-          <td>Rp ${p.harga.toLocaleString('id-ID')}</td>
-          <td>${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</td>
-          <td>
-            <button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button>
-            <button class="warn" onclick="pilihLabel('${p.barcode}')">Label</button>
-            <button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button>
-          </td>
-        </tr>
-      `;
-    });
+  filtered.forEach(p => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${p.kategori}</td>
+        <td>${p.barcode}</td>
+        <td>${p.nama}</td>
+        <td>Rp ${p.harga.toLocaleString('id-ID')}</td>
+        <td>${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</td>
+        <td>
+          <button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button>
+          <button class="warn" onclick="pilihLabel('${p.barcode}')">Label</button>
+          <button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  // Mobile Cards
+  const mobileDiv = document.getElementById('produkMobile');
+  mobileDiv.innerHTML = '';
+  filtered.forEach(p => {
+    mobileDiv.innerHTML += `
+      <div class="card-mobile">
+        <div class="card-mobile-row">
+          <span class="card-mobile-label">Kategori</span>
+          <span>${p.kategori}</span>
+        </div>
+        <div class="card-mobile-row">
+          <span class="card-mobile-label">Nama</span>
+          <span><b>${p.nama}</b></span>
+        </div>
+        <div class="card-mobile-row">
+          <span class="card-mobile-label">Harga</span>
+          <span>Rp ${p.harga.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="card-mobile-row">
+          <span class="card-mobile-label">Stok</span>
+          <span>${p.stok} ${p.stok <= p.minStok? '<span class="badge danger">Menipis</span>' : ''}</span>
+        </div>
+        <div style="display:flex; gap:8px; margin-top:8px;">
+          <button class="ghost" onclick="editProduk('${p.barcode}')">Edit</button>
+          <button class="warn" onclick="pilihLabel('${p.barcode}')">Label</button>
+          <button class="danger" onclick="hapusProduk('${p.barcode}')">Hapus</button>
+        </div>
+      </div>
+    `;
+  });
 }
 
 function editProduk(barcode) {
   const p = produk.find(x => x.barcode === barcode);
+  document.getElementById('pKategori').value = p.kategori;
   document.getElementById('pBarcode').value = p.barcode;
   document.getElementById('pNama').value = p.nama;
   document.getElementById('pHarga').value = p.harga;
@@ -312,7 +400,7 @@ function hapusProduk(barcode) {
   renderProduk();
 }
 
-// ===== SCAN BARCODE =====
+// ===== SCAN & KERANJANG =====
 function startScan() {
   document.getElementById('reader').style.display = 'block';
   html5QrCode = new Html5Qrcode("reader");
@@ -338,7 +426,7 @@ function cariProduk() {
     div.innerHTML += `
       <div class="card" style="margin-top:8px; cursor:pointer;" onclick="tambahKeKeranjang('${p.barcode}')">
         <b>${p.nama}</b><br>
-        Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok}
+        <small>${p.kategori} - Rp ${p.harga.toLocaleString('id-ID')} | Stok: ${p.stok}</small>
       </div>
     `;
   });
@@ -361,7 +449,10 @@ function tambahKeKeranjang(barcode) {
 
 function renderKeranjang() {
   const tbody = document.querySelector('#keranjang tbody');
+  const mobileDiv = document.getElementById('keranjangMobile');
   tbody.innerHTML = '';
+  mobileDiv.innerHTML = '';
+
   let total = 0;
 
   if (keranjang.length === 0) {
@@ -373,9 +464,11 @@ function renderKeranjang() {
   keranjang.forEach((item, i) => {
     const sub = item.harga * item.qty;
     total += sub;
+
+    // Desktop
     tbody.innerHTML += `
       <tr>
-        <td>${item.nama}<br><small>Rp ${item.harga.toLocaleString('id-ID')}</small></td>
+        <td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></td>
         <td>
           <button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>
           ${item.qty}
@@ -385,7 +478,24 @@ function renderKeranjang() {
         <td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td>
       </tr>
     `;
+
+    // Mobile
+    mobileDiv.innerHTML += `
+      <div class="card-mobile">
+        <div><b>${item.nama}</b><br><small>${item.kategori}</small></div>
+        <div class="card-mobile-row">
+          <span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span>
+          <span><b>Rp ${sub.toLocaleString('id-ID')}</b></span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="ghost" onclick="ubahQty(${i}, -1)">-</button>
+          <button class="ghost" onclick="ubahQty(${i}, 1)">+</button>
+          <button class="danger" onclick="hapusKeranjang(${i})">Hapus</button>
+        </div>
+      </div>
+    `;
   });
+
   document.getElementById('total').textContent = total.toLocaleString('id-ID');
   hitungKembalian();
 }
@@ -417,7 +527,7 @@ function resetKeranjang() {
   document.getElementById('bayar').value = '';
 }
 
-// ===== QRIS =====
+// ===== QRIS & CHECKOUT =====
 function toggleQRIS() {
   const metode = document.getElementById('metodeBayar').value;
   document.getElementById('qrisBox').style.display = metode === 'qris'? 'block' : 'none';
@@ -459,7 +569,6 @@ function checkout() {
   transaksi.push(trx);
   localStorage.setItem('transaksi', JSON.stringify(transaksi));
 
-  // Kurangi stok
   keranjang.forEach(k => {
     const p = produk.find(x => x.barcode === k.barcode);
     if (p) p.stok -= k.qty;
@@ -481,7 +590,7 @@ function cetakStruk(trx) {
   });
 
   document.getElementById('struk').innerHTML = `
-    <div class="center"><b>${setting.nama || 'Toko'}</b></div>
+    <div class="center"><b>${setting.nama || 'TOKO'}</b></div>
     <div class="center">${setting.alamat || ''}</div>
     <div class="center">${trx.id}</div>
     <div class="line"></div>
@@ -495,16 +604,17 @@ function cetakStruk(trx) {
     <div class="line"></div>
     <div class="center">${setting.link || ''}</div>
   `;
-  window.print();
+
+  // Delay dikit biar DOM ke-render dulu baru print
+  setTimeout(() => window.print(), 100);
 }
 
-// ===== LAPORAN LABA RUGI =====
+// ===== LAPORAN =====
 function renderLaporan() {
   const filter = document.getElementById('filterTanggal').value;
   const data = filter? transaksi.filter(t => t.waktu.startsWith(filter)) : transaksi;
 
-  let totalOmset = 0, totalHPP = 0;
-
+  let totalOmzet = 0, totalHPP = 0;
   const tbody = document.querySelector('#tabelLaporan tbody');
   tbody.innerHTML = '';
 
@@ -538,23 +648,44 @@ function renderLaporan() {
   `;
 }
 
-// ===== STOK & LABEL =====
+// ===== STOK & KATEGORI =====
 function renderStokMenipis() {
   const menipis = produk.filter(p => p.stok <= p.minStok && p.stok > 0);
   const habis = produk.filter(p => p.stok <= 0);
 
   let html = '<h5>Stok Menipis</h5>';
   if (menipis.length === 0) html += '<p class="empty">Aman</p>';
+
+  // Kelompokin by kategori
+  const grouped = {};
   menipis.forEach(p => {
-    html += `<div class="card">${p.nama} - Sisa ${p.stok}
-      <span class="badge">Beli min ${p.minStok - p.stok + 10} pcs</span></div>`;
+    if (!grouped[p.kategori]) grouped[p.kategori] = [];
+    grouped[p.kategori].push(p);
   });
+
+  for (let kat in grouped) {
+    html += `<div class="category-header">${kat}</div>`;
+    grouped[kat].forEach(p => {
+      html += `<div class="card">${p.nama} - Sisa ${p.stok}
+        <span class="badge">Beli min ${p.minStok - p.stok + 10} pcs</span></div>`;
+    });
+  }
 
   html += '<h5 style="margin-top:16px;">Stok Habis</h5>';
   if (habis.length === 0) html += '<p class="empty">Tidak ada</p>';
+
+  const groupedHabis = {};
   habis.forEach(p => {
-    html += `<div class="card">${p.nama} <span class="badge danger">Habis</span></div>`;
+    if (!groupedHabis[p.kategori]) groupedHabis[p.kategori] = [];
+    groupedHabis[p.kategori].push(p);
   });
+
+  for (let kat in groupedHabis) {
+    html += `<div class="category-header">${kat}</div>`;
+    groupedHabis[kat].forEach(p => {
+      html += `<div class="card">${p.nama} <span class="badge danger">Habis</span></div>`;
+    });
+  }
 
   document.getElementById('listStokMenipis').innerHTML = html;
 
@@ -562,7 +693,7 @@ function renderStokMenipis() {
   const listLabel = document.getElementById('listLabel');
   listLabel.innerHTML = '';
   produk.forEach(p => {
-    listLabel.innerHTML += `<button class="ghost" onclick="pilihLabel('${p.barcode}')">${p.nama}</button>`;
+    listLabel.innerHTML += `<button class="ghost" onclick="pilihLabel('${p.barcode}')">${p.kategori} - ${p.nama}</button>`;
   });
 }
 
@@ -581,10 +712,11 @@ function cetakLabel() {
     <div>Rp ${p.harga.toLocaleString('id-ID')}</div>
     <div style="font-size:6px;">${p.barcode}</div>
   `;
-  window.print();
+
+  setTimeout(() => window.print(), 100);
 }
 
-// ===== BACKUP & RESTORE =====
+// ===== BACKUP =====
 function exportData() {
   const data = {
     produk: produk,
@@ -598,7 +730,6 @@ function exportData() {
   a.href = url;
   a.download = 'kasir-backup-' + new Date().toISOString().split('T')[0] + '.json';
   a.click();
-  URL.revokeObjectURL(url);
 }
 
 function importData(event) {
@@ -657,4 +788,4 @@ loadSetting();
 renderKeranjang();
 </script>
 </body>
-      </html>
+  </html>
