@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kasir Digital</title>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
@@ -15,28 +15,31 @@
     --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8;
     --accent: #38bdf8; --danger: #f87171; --warn: #fbbf24; --border: #334155;
   }
-    * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; }
-.tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; }
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; font-size: 14px; }
 .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
-.page { display: none; padding: 16px; max-width: 1000px; margin: 0 auto; }
+.page { display: none; padding: 12px; max-width: 1000px; margin: 0 auto; }
 .page.active { display: block; }
-.grid { display: grid; gap: 16px; }
+.grid { display: grid; gap: 12px; }
 .grid-2 { grid-template-columns: 1fr 1fr; }
-.card { background: var(--card); padding: 16px; border-radius: 12px; border: 1px solid var(--border); }
-  input, button, select, textarea { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; background: var(--bg); color: var(--text); }
+.card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border); }
+  input, button, select, textarea { width: 100%; padding: 12px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--border); font-size: 16px; background: var(--bg); color: var(--text); }
   button { background: var(--accent); color: #fff; font-weight: 600; border: none; cursor: pointer; }
+  button:active { opacity: 0.8; }
   button.ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
   button.danger { background: var(--danger); }
   button.success { background: #10b981; }
 
-.category-header { background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
-.product-btn { padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); }
-.product-btn.name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
-.product-btn.price { font-size: 12px; color: var(--muted); }
+.category-header { background: var(--accent); color: #fff; padding: 10px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.product-btn { padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); }
+.product-btn:active { background: var(--bg); }
+.product-btn.name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+.product-btn.price { font-size: 13px; color: var(--muted); }
 
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
@@ -69,16 +72,28 @@
 .struk-screen {
   background: #fff;
   color: #000;
-  padding: 20px;
+  padding: 20px 16px;
   width: 100%;
-  max-width: 100%;
   font-family: 'Courier New', monospace;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 .struk-screen.center { text-align: center; }
-.struk-screen.line { border-top: 1px dashed #000; margin: 10px 0; }
-.struk-screen.row { display: flex; justify-content: space-between; margin: 5px 0; }
+.struk-screen.line { border-top: 1px dashed #000; margin: 12px 0; }
+.struk-screen.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 6px 0;
+  gap: 10px;
+}
+.struk-screen.row span:first-child {
+  flex: 1;
+  word-wrap: break-word;
+}
+.struk-screen.row span:last-child {
+  flex-shrink: 0;
+  text-align: right;
+}
 .struk-screen b { font-size: 18px; }
 
 /* Print thermal 58mm */
@@ -91,14 +106,14 @@
   }
   #struk.center { text-align: center; }
   #struk.line { border-top: 1px dashed #000; margin: 4px 0; }
-  #struk.row { display: flex; justify-content: space-between; }
+  #struk.row { display: flex; justify-content: space-between; gap: 5px; }
 </style>
 </head>
 <body data-theme="dark">
 
 <header>
-  <h3 style="margin:0;">Kasir Digital</h3>
-  <button class="ghost" onclick="toggleTheme()" style="width:auto;">🌓</button>
+  <h3 style="margin:0; font-size: 16px;">Kasir Digital</h3>
+  <button class="ghost" onclick="toggleTheme()" style="width:auto; padding: 8px 12px;">🌓</button>
 </header>
 
 <div class="tabs">
@@ -113,7 +128,7 @@
   <div class="grid grid-2">
     <div>
       <div class="card">
-        <h4>Produk</h4>
+        <h4 style="margin-top:0;">Produk</h4>
         <button onclick="startScan()">📷 Scan Barcode</button>
         <div id="reader" style="display:none;"></div>
 
@@ -128,12 +143,12 @@
             <option value="Snack">Snack</option>
             <option value="Lainnya">Lainnya</option>
           </select>
-          <input id="pBarcode" placeholder="Barcode">
+          <input id="pBarcode" placeholder="Barcode" inputmode="text">
           <input id="pNama" placeholder="Nama Produk">
-          <input id="pHarga" type="number" placeholder="Harga Jual">
-          <input id="pModal" type="number" placeholder="Harga Modal">
-          <input id="pStok" type="number" placeholder="Stok Awal">
-          <input id="pMinStok" type="number" placeholder="Batas Stok Menipis" value="5">
+          <input id="pHarga" type="number" placeholder="Harga Jual" inputmode="numeric">
+          <input id="pModal" type="number" placeholder="Harga Modal" inputmode="numeric">
+          <input id="pStok" type="number" placeholder="Stok Awal" inputmode="numeric">
+          <input id="pMinStok" type="number" placeholder="Batas Stok Menipis" value="5" inputmode="numeric">
           <button onclick="simpanProduk()">Simpan Produk</button>
           <button class="ghost" onclick="toggleAddProduct()">Batal</button>
         </div>
@@ -144,15 +159,14 @@
     </div>
 
     <div class="card">
-      <h4>Keranjang</h4>
+      <h4 style="margin-top:0;">Keranjang</h4>
       <table id="keranjang" class="table-mobile"><tbody></tbody></table>
       <div id="keranjangMobile"></div>
       <div class="empty" id="emptyCart">Keranjang masih kosong</div>
-
-      <div style="margin-top:12px;">
+            <div style="margin-top:12px;">
         <div class="right" style="font-size:20px; font-weight:bold;">Total: Rp <span id="total">0</span></div>
         <div class="card" style="margin-top:12px;">
-          <h4>Metode Bayar</h4>
+          <h4 style="margin-top:0;">Metode Bayar</h4>
           <select id="metodeBayar" onchange="toggleQRIS()">
             <option value="cash">Cash</option>
             <option value="qris">QRIS</option>
@@ -161,7 +175,7 @@
             <img id="qrisImg" src="" width="180" height="180" alt="QRIS">
           </div>
           <div id="cashBox">
-            <input id="bayar" type="number" placeholder="Uang Bayar">
+            <input id="bayar" type="number" placeholder="Uang Bayar" inputmode="numeric">
             <div>Kembalian: Rp <span id="kembali">0</span></div>
           </div>
         </div>
@@ -175,10 +189,10 @@
 <!-- LAPORAN -->
 <div id="laporan" class="page">
   <div class="card">
-    <h4>Laporan Penjualan</h4>
+    <h4 style="margin-top:0;">Laporan Penjualan</h4>
     <input id="filterTanggal" type="date">
     <button onclick="renderLaporan()">Filter</button>
-    <div id="ringkasanLaporan" style="margin:12px 0;"></div>
+    <div id="ringkasanLaporan" style="margin:12px 0; font-size: 14px;"></div>
     <div class="table-mobile">
       <table id="tabelLaporan"><thead><tr><th>Waktu</th><th>No</th><th>Item</th><th>Omzet</th><th>HPP</th><th>Laba</th><th>Aksi</th></tr></thead><tbody></tbody></table>
     </div>
@@ -189,7 +203,7 @@
 <!-- STOK -->
 <div id="stok" class="page">
   <div class="card">
-    <h4>Stok Menipis</h4>
+    <h4 style="margin-top:0;">Stok Menipis</h4>
     <div id="listStokMenipis"></div>
   </div>
 </div>
@@ -197,7 +211,7 @@
 <!-- SETTING -->
 <div id="setting" class="page">
   <div class="card">
-    <h4>Setting Toko</h4>
+    <h4 style="margin-top:0;">Setting Toko</h4>
     <input id="namaToko" placeholder="Nama Toko">
     <input id="alamatToko" placeholder="Alamat">
     <input id="linkToko" placeholder="Link Kritik & Saran">
@@ -214,9 +228,9 @@
 
 <!-- Modal Struk Full Screen -->
 <div id="modalStruk">
-  <div style="padding: 12px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 101;">
-    <button class="ghost" onclick="closeModalStruk()" style="width: auto;">← Kembali</button>
-    <button class="success" onclick="printStruk()" style="width: auto; float: right;">🖨️ Cetak</button>
+  <div style="padding: 12px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 101; display: flex; gap: 8px;">
+    <button class="ghost" onclick="closeModalStruk()" style="width: auto; flex: 1;">← Kembali</button>
+    <button class="success" onclick="printStruk()" style="width: auto; flex: 1;">🖨️ Cetak</button>
   </div>
   <div id="strukScreen"></div>
 </div>
@@ -344,8 +358,7 @@ function editHarga(barcode) {
     alert('Harga diupdate');
   }
 }
-
-function hapusProduk(barcode) {
+  function hapusProduk(barcode) {
   if (!confirm('Hapus produk ini?')) return;
   produk = produk.filter(p => p.barcode!== barcode);
   localStorage.setItem('produk', JSON.stringify(produk));
@@ -375,8 +388,8 @@ function renderKeranjang() {
   keranjang.forEach((item, i) => {
     const sub = item.harga * item.qty;
     total += sub;
-    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')} <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit</button> <button class="danger" style="padding:2px 6px; font-size:11px;" onclick="hapusProduk('${item.barcode}')">Hapus</button></small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b><br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></div><div style="display:flex; gap:8px; margin:8px 0;"><button class="ghost" style="padding:5px;" onclick="editHarga('${item.barcode}')">Edit Harga</button><button class="danger" style="padding:5px;" onclick="hapusProduk('${item.barcode}')">Hapus Produk</button></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus dari Keranjang</button></div></div>`;
+    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')} <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit</button> <button class="danger" style="padding:2px 6px; font-size:11px;" onclick="hapusProduk('${item.barcode}')">Hapus</button></small></td><td><button class="ghost" style="width:32px; padding:8px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:32px; padding:8px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b><br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></div><div style="display:flex; gap:8px; margin:8px 0;"><button class="ghost" style="padding:8px;" onclick="editHarga('${item.barcode}')">Edit Harga</button><button class="danger" style="padding:8px;" onclick="hapusProduk('${item.barcode}')">Hapus Produk</button></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
   });
   document.getElementById('total').textContent = total.toLocaleString('id-ID');
   hitungKembalian();
@@ -453,7 +466,7 @@ function showStrukScreen(trx) {
     itemsHtml += `<div><b>${i.nama}</b></div><div class="row"><span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span><span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span></div><div class="line"></div>`;
   });
 
-  document.getElementById('strukScreen').innerHTML = `<div class="struk-screen"><div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div></div>`;
+  document.getElementById('strukScreen').innerHTML = `<div class="struk-screen"><div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center" style="font-size: 13px;">${setting.link || ''}</div></div>`;
 
   document.getElementById('struk').innerHTML = `<div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div>`;
 
@@ -572,7 +585,12 @@ function resetSemua() {
 }
 
 function simpanSetting() {
-  setting = { nama: document.getElementById('namaToko').value, alamat: document.getElementById('alamatToko').value, link: document.getElementById('linkToko').value, qris: document.getElementById('qrisString').value };
+  setting = {
+    nama: document.getElementById('namaToko').value,
+    alamat: document.getElementById('alamatToko').value,
+    link: document.getElementById('linkToko').value,
+    qris: document.getElementById('qrisString').value
+  };
   localStorage.setItem('setting', JSON.stringify(setting));
   alert('Tersimpan');
 }
@@ -590,4 +608,4 @@ renderKeranjang();
 renderQuickProducts();
 </script>
 </body>
-  </html>
+</html>
