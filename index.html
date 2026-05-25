@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Kasir Lokal Pro</title>
+<title>Kasir Digital</title>
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <style>
@@ -16,49 +16,61 @@
     --accent: #38bdf8; --danger: #f87171; --warn: #fbbf24; --border: #334155;
   }
     * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); }
+  body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
   header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
 .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 8px 16px; }
-.tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+.tab { padding: 8px 16px; border-radius: 8px; cursor: pointer; background: var(--card); border: 1px solid var(--border); white-space: nowrap; }
 .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 .page { display: none; padding: 16px; max-width: 1000px; margin: 0 auto; }
 .page.active { display: block; }
 .grid { display: grid; gap: 16px; }
 .grid-2 { grid-template-columns: 1fr 1fr; }
-.card { background: var(--card); padding: 16px; border-radius: 12px; border: 1px solid var(--border); overflow: visible; }
+.card { background: var(--card); padding: 16px; border-radius: 12px; border: 1px solid var(--border); }
   input, button, select, textarea { width: 100%; padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--border); font-size: 14px; background: var(--bg); color: var(--text); }
-  button { background: var(--accent); color: #fff; font-weight: 600; border: none; cursor: pointer; position: relative; z-index: 1; }
+  button { background: var(--accent); color: #fff; font-weight: 600; border: none; cursor: pointer; }
   button.ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
   button.danger { background: var(--danger); }
-  button.warn { background: var(--warn); color: #000; }
+  button.success { background: #10b981; }
 
-.category-header { background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
-.product-btn { padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); min-height: 60px; }
-.product-btn:active { background: var(--accent); color: #fff; }
-.product-btn.name { font-weight: 600; font-size: 13px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text); }
+.category-header { background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 6px; margin: 12px 0 8px 0; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+.product-btn { padding: 10px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; text-align: left; cursor: pointer; color: var(--text); }
+.product-btn.name { font-weight: 600; font-size: 13px; margin-bottom: 4px; }
 .product-btn.price { font-size: 12px; color: var(--muted); }
-.product-btn:active.price { color: #fff; }
 
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
 
   @media (max-width: 768px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .table-mobile { display: none; }
-  .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; overflow: visible; }
-  .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-  .card-mobile-label { color: var(--muted); font-size: 12px; }
+ .grid-2 { grid-template-columns: 1fr; }
+ .table-mobile { display: none; }
+ .card-mobile { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+ .card-mobile-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+ .card-mobile-label { color: var(--muted); font-size: 12px; }
   }
   @media (min-width: 769px) {.card-mobile { display: none; } }
 
 .right { text-align: right; }
-.badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; background: var(--warn); color: #000; display: inline-block; }
-.badge.danger { background: var(--danger); color: #fff; }
-  #reader { width: 100%; border-radius: 8px; overflow: hidden; }
+.badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; background: var(--warn); color: #000; }
+  #reader { width: 100%; border-radius: 8px; overflow: hidden; margin: 8px 0; }
 .empty { text-align: center; color: var(--muted); padding: 20px; }
 
-  #struk { display: none; }
+/* Struk untuk layar HP */
+.struk-screen {
+  background: #fff;
+  color: #000;
+  padding: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+.struk-screen.center { text-align: center; }
+.struk-screen.line { border-top: 1px dashed #000; margin: 8px 0; }
+.struk-screen.row { display: flex; justify-content: space-between; margin: 4px 0; }
+
+/* Struk untuk print thermal 58mm */
+#struk { display: none; }
   @media print {
     @page { margin: 0; size: 58mm auto; }
     body * { visibility: hidden; }
@@ -90,6 +102,9 @@
     <div>
       <div class="card">
         <h4>Produk</h4>
+        <button onclick="startScan()">📷 Scan Barcode</button>
+        <div id="reader" style="display:none;"></div>
+
         <button onclick="toggleAddProduct()" id="btnToggleAdd">+ Tambah Produk</button>
         <div id="addProductForm" style="display:none; margin-top:12px;">
           <select id="pKategori">
@@ -112,7 +127,6 @@
         </div>
 
         <input id="searchProduk" placeholder="Cari nama produk..." oninput="renderQuickProducts()" style="margin-top:12px;">
-
         <div id="quickProducts" style="margin-top:12px;"></div>
       </div>
     </div>
@@ -133,7 +147,6 @@
           </select>
           <div id="qrisBox" style="display:none; text-align:center; margin-top:12px;">
             <img id="qrisImg" src="" width="180" height="180" alt="QRIS">
-            <p style="font-size:12px; color:var(--muted);">Scan QR ini buat bayar</p>
           </div>
           <div id="cashBox">
             <input id="bayar" type="number" placeholder="Uang Bayar">
@@ -164,7 +177,7 @@
 <!-- STOK -->
 <div id="stok" class="page">
   <div class="card">
-    <h4>Stok Menipis & Perlu Beli</h4>
+    <h4>Stok Menipis</h4>
     <div id="listStokMenipis"></div>
   </div>
 </div>
@@ -176,7 +189,7 @@
     <input id="namaToko" placeholder="Nama Toko">
     <input id="alamatToko" placeholder="Alamat">
     <input id="linkToko" placeholder="Link Kritik & Saran">
-    <textarea id="qrisString" placeholder="Tempel string QRIS statis disini" rows="3"></textarea>
+    <textarea id="qrisString" placeholder="Tempel string QRIS statis" rows="3"></textarea>
     <button onclick="simpanSetting()">Simpan</button>
   </div>
   <div class="card">
@@ -184,6 +197,17 @@
     <button onclick="exportData()">Export Backup</button>
     <input type="file" id="importFile" accept=".json" onchange="importData(event)">
     <button class="danger" onclick="resetSemua()">Reset Semua Data</button>
+  </div>
+</div>
+
+<!-- Modal Struk untuk layar HP -->
+<div id="modalStruk" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:100; overflow:auto; padding:20px;">
+  <div style="max-width:500px; margin:0 auto;">
+    <div id="strukScreen"></div>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button class="success" onclick="printStruk()">🖨️ Cetak ke Printer</button>
+      <button class="ghost" onclick="closeModalStruk()">Tutup</button>
+    </div>
   </div>
 </div>
 
@@ -218,12 +242,24 @@ function toggleAddProduct() {
   form.style.display = form.style.display === 'none'? 'block' : 'none';
 }
 
+function startScan() {
+  document.getElementById('reader').style.display = 'block';
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 },
+    (decodedText) => {
+      document.getElementById('searchProduk').value = decodedText;
+      renderQuickProducts();
+      html5QrCode.stop();
+      document.getElementById('reader').style.display = 'none';
+    },
+    (err) => {}
+  );
+}
+
 function renderQuickProducts() {
   const container = document.getElementById('quickProducts');
-  if (!container) return;
-  container.innerHTML = '';
-
   const search = document.getElementById('searchProduk').value.toLowerCase();
+
   const filtered = produk.filter(p =>
     p.stok > 0 && p.nama && p.nama.trim()!== '' &&!isNaN(p.harga) && p.harga > 0 &&
     p.nama.toLowerCase().includes(search)
@@ -241,6 +277,7 @@ function renderQuickProducts() {
     grouped[kat].push(p);
   });
 
+  container.innerHTML = '';
   for (let kat in grouped) {
     container.innerHTML += `<div class="category-header">${kat} <span class="badge">${grouped[kat].length}</span></div>`;
     let gridHtml = '<div class="product-grid">';
@@ -285,6 +322,18 @@ function resetFormProduk() {
   document.getElementById('pStok').value = '';
 }
 
+function editHarga(barcode) {
+  const p = produk.find(x => x.barcode === barcode);
+  if (!p) return;
+  const hargaBaru = prompt(`Edit harga ${p.nama}`, p.harga);
+  if (hargaBaru &&!isNaN(hargaBaru) && hargaBaru > 0) {
+    p.harga = parseInt(hargaBaru);
+    localStorage.setItem('produk', JSON.stringify(produk));
+    renderQuickProducts();
+    alert('Harga diupdate');
+  }
+}
+
 function tambahKeKeranjang(barcode) {
   const p = produk.find(x => x.barcode === barcode);
   if (!p) return alert('Produk tidak ditemukan');
@@ -307,8 +356,8 @@ function renderKeranjang() {
   keranjang.forEach((item, i) => {
     const sub = item.harga * item.qty;
     total += sub;
-    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b><br><small>${item.kategori}</small></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
+    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')} <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit</button></small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b> <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit Harga</button><br><small>${item.kategori}</small></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
   });
   document.getElementById('total').textContent = total.toLocaleString('id-ID');
   hitungKembalian();
@@ -373,19 +422,32 @@ function checkout() {
     if (p) p.stok -= k.qty;
   });
   localStorage.setItem('produk', JSON.stringify(produk));
-  cetakStruk(trx);
+  showStrukScreen(trx);
   resetKeranjang();
   renderQuickProducts();
 }
 
-function cetakStruk(trx) {
+function showStrukScreen(trx) {
   const tgl = new Date(trx.waktu).toLocaleString('id-ID');
   let itemsHtml = '';
   trx.items.forEach(i => {
     itemsHtml += `<div><b>${i.nama}</b></div><div class="row"><span>${i.qty} x ${i.harga.toLocaleString('id-ID')}</span><span>Rp ${(i.qty * i.harga).toLocaleString('id-ID')}</span></div><div class="line"></div>`;
   });
+
+  document.getElementById('strukScreen').innerHTML = `<div class="struk-screen"><div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div></div>`;
+
+  // Siapkan juga untuk print thermal
   document.getElementById('struk').innerHTML = `<div class="center"><b>${setting.nama || 'TOKO'}</b></div><div class="center">${setting.alamat || ''}</div><div class="center">${trx.id}</div><div class="line"></div><div>${tgl}</div><div>Metode: ${trx.metode.toUpperCase()}</div><div class="line"></div>${itemsHtml}<div class="row"><span>Total</span><span>Rp ${trx.total.toLocaleString('id-ID')}</span></div><div class="row"><span>Bayar</span><span>Rp ${trx.bayar.toLocaleString('id-ID')}</span></div><div class="row"><span>Kembali</span><span>Rp ${trx.kembali.toLocaleString('id-ID')}</span></div><div class="line"></div><div class="center">${setting.link || ''}</div>`;
-  setTimeout(() => window.print(), 100);
+
+  document.getElementById('modalStruk').style.display = 'block';
+}
+
+function printStruk() {
+  window.print();
+}
+
+function closeModalStruk() {
+  document.getElementById('modalStruk').style.display = 'none';
 }
 
 function renderLaporan() {
@@ -409,9 +471,9 @@ function renderLaporan() {
     totalHPP += hpp;
     const tgl = new Date(t.waktu).toLocaleString('id-ID');
 
-    if (tbody) tbody.innerHTML += `<tr><td>${tgl}</td><td>${t.id}</td><td>${t.items.length} item</td><td>Rp ${t.total.toLocaleString('id-ID')}</td><td>Rp ${hpp.toLocaleString('id-ID')}</td><td>Rp ${laba.toLocaleString('id-ID')}</td><td><button class="danger" style="padding:5px 8px;" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></td></tr>`;
+    if (tbody) tbody.innerHTML += `<tr><td>${tgl}</td><td>${t.id}</td><td>${t.items.length} item</td><td>Rp ${t.total.toLocaleString('id-ID')}</td><td>Rp ${hpp.toLocaleString('id-ID')}</td><td>Rp ${laba.toLocaleString('id-ID')}</td><td><button class="ghost" style="padding:5px;" onclick="showStrukScreen(${JSON.stringify(t).replace(/"/g, '&quot;')})">Cetak</button> <button class="danger" style="padding:5px;" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></td></tr>`;
 
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div class="card-mobile-row"><span class="card-mobile-label">Tanggal</span><span>${tgl}</span></div><div class="card-mobile-row"><span class="card-mobile-label">No</span><span>${t.id}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Item</span><span>${t.items.length} item</span></div><div class="card-mobile-row"><span class="card-mobile-label">Omzet</span><span>Rp ${t.total.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">HPP</span><span>Rp ${hpp.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Laba</span><span style="color:var(--accent); font-weight:600;">Rp ${laba.toLocaleString('id-ID')}</span></div><button class="danger" style="margin-top:8px;" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus Transaksi</button></div>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div class="card-mobile-row"><span class="card-mobile-label">Tanggal</span><span>${tgl}</span></div><div class="card-mobile-row"><span class="card-mobile-label">No</span><span>${t.id}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Item</span><span>${t.items.length} item</span></div><div class="card-mobile-row"><span class="card-mobile-label">Omzet</span><span>Rp ${t.total.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">HPP</span><span>Rp ${hpp.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Laba</span><span style="color:var(--accent); font-weight:600;">Rp ${laba.toLocaleString('id-ID')}</span></div><div style="display:flex; gap:8px; margin-top:8px;"><button class="ghost" onclick="showStrukScreen(${JSON.stringify(t).replace(/"/g, '&quot;')})">Cetak Struk</button><button class="danger" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></div></div>`;
   });
 
   document.getElementById('ringkasanLaporan').innerHTML = `<b>Transaksi:</b> ${data.length} | <b>Omzet:</b> Rp ${totalOmzet.toLocaleString('id-ID')} | <b>HPP:</b> Rp ${totalHPP.toLocaleString('id-ID')} | <b>Laba:</b> Rp ${(totalOmzet - totalHPP).toLocaleString('id-ID')}`;
@@ -419,14 +481,11 @@ function renderLaporan() {
 
 function hapusTransaksi(idx) {
   if (!confirm('Hapus transaksi ini? Stok akan dikembalikan.')) return;
-
   const trx = transaksi[idx];
-  // Kembalikan stok
   trx.items.forEach(item => {
     const p = produk.find(x => x.barcode === item.barcode);
     if (p) p.stok += item.qty;
   });
-
   transaksi.splice(idx, 1);
   localStorage.setItem('transaksi', JSON.stringify(transaksi));
   localStorage.setItem('produk', JSON.stringify(produk));
@@ -436,12 +495,12 @@ function hapusTransaksi(idx) {
 
 function renderStokMenipis() {
   const menipis = produk.filter(p => p.stok <= p.minStok && p.stok > 0);
-  let html = '<h5>Stok Menipis</h5>';
-  if (menipis.length === 0) html += '<p class="empty">Aman</p>';
+  let html = '';
+  if (menipis.length === 0) html += '<p class="empty">Stok aman</p>';
   const grouped = {};
   menipis.forEach(p => {
     if (!grouped[p.kategori]) grouped[p.kategori] = [];
-    grouped[kat].push(p);
+    grouped[p.kategori].push(p);
   });
   for (let kat in grouped) {
     html += `<div class="category-header">${kat}</div>`;
@@ -513,4 +572,4 @@ renderKeranjang();
 renderQuickProducts();
 </script>
 </body>
-              </html>
+  </html>
