@@ -55,22 +55,33 @@
   #reader { width: 100%; border-radius: 8px; overflow: hidden; margin: 8px 0; }
 .empty { text-align: center; color: var(--muted); padding: 20px; }
 
-/* Struk untuk layar HP - full screen */
+/* Struk full layar HP */
+#modalStruk {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #fff;
+  z-index: 100;
+  overflow-y: auto;
+}
+
 .struk-screen {
   background: #fff;
   color: #000;
-  padding: 16px;
-  max-width: 500px;
-  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
   font-family: 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 15px;
+  line-height: 1.5;
 }
 .struk-screen.center { text-align: center; }
-.struk-screen.line { border-top: 1px dashed #000; margin: 8px 0; }
-.struk-screen.row { display: flex; justify-content: space-between; margin: 4px 0; }
+.struk-screen.line { border-top: 1px dashed #000; margin: 10px 0; }
+.struk-screen.row { display: flex; justify-content: space-between; margin: 5px 0; }
+.struk-screen b { font-size: 18px; }
 
-/* Struk untuk print thermal 58mm */
+/* Print thermal 58mm */
 #struk { display: none; }
   @media print {
     @page { margin: 0; size: 58mm auto; }
@@ -106,7 +117,7 @@
         <button onclick="startScan()">📷 Scan Barcode</button>
         <div id="reader" style="display:none;"></div>
 
-        <button onclick="toggleAddProduct()" id="btnToggleAdd">+ Tambah Produk</button>
+        <button onclick="toggleAddProduct()">+ Tambah Produk</button>
         <div id="addProductForm" style="display:none; margin-top:12px;">
           <select id="pKategori">
             <option value="">Pilih Kategori</option>
@@ -154,7 +165,7 @@
             <div>Kembalian: Rp <span id="kembali">0</span></div>
           </div>
         </div>
-        <button onclick="checkout()">Proses & Cetak Struk</button>
+        <button onclick="checkout()">Proses & Lihat Struk</button>
         <button class="danger" onclick="resetKeranjang()">Reset</button>
       </div>
     </div>
@@ -201,15 +212,13 @@
   </div>
 </div>
 
-<!-- Modal Struk untuk layar HP -->
-<div id="modalStruk" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:100; overflow:auto; padding:20px;">
-  <div style="max-width:500px; margin:0 auto;">
-    <div id="strukScreen"></div>
-    <div style="display:flex; gap:8px; margin-top:12px;">
-      <button class="success" onclick="printStruk()">🖨️ Cetak ke Printer</button>
-      <button class="ghost" onclick="closeModalStruk()">Tutup</button>
-    </div>
+<!-- Modal Struk Full Screen -->
+<div id="modalStruk">
+  <div style="padding: 12px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 101;">
+    <button class="ghost" onclick="closeModalStruk()" style="width: auto;">← Kembali</button>
+    <button class="success" onclick="printStruk()" style="width: auto; float: right;">🖨️ Cetak</button>
   </div>
+  <div id="strukScreen"></div>
 </div>
 
 <div id="struk"></div>
@@ -336,6 +345,14 @@ function editHarga(barcode) {
   }
 }
 
+function hapusProduk(barcode) {
+  if (!confirm('Hapus produk ini?')) return;
+  produk = produk.filter(p => p.barcode!== barcode);
+  localStorage.setItem('produk', JSON.stringify(produk));
+  renderQuickProducts();
+  alert('Produk dihapus');
+}
+
 function tambahKeKeranjang(barcode) {
   const p = produk.find(x => x.barcode === barcode);
   if (!p) return alert('Produk tidak ditemukan');
@@ -358,8 +375,8 @@ function renderKeranjang() {
   keranjang.forEach((item, i) => {
     const sub = item.harga * item.qty;
     total += sub;
-    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')} <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit</button></small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b> <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit Harga</button><br><small>${item.kategori}</small></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus</button></div></div>`;
+    if (tbody) tbody.innerHTML += `<tr><td>${item.nama}<br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')} <button class="ghost" style="padding:2px 6px; font-size:11px;" onclick="editHarga('${item.barcode}')">Edit</button> <button class="danger" style="padding:2px 6px; font-size:11px;" onclick="hapusProduk('${item.barcode}')">Hapus</button></small></td><td><button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, -1)">-</button>${item.qty}<button class="ghost" style="width:30px; padding:5px;" onclick="ubahQty(${i}, 1)">+</button></td><td class="right">Rp ${sub.toLocaleString('id-ID')}</td><td><button class="danger" onclick="hapusKeranjang(${i})">x</button></td></tr>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div><b>${item.nama}</b><br><small>${item.kategori} - Rp ${item.harga.toLocaleString('id-ID')}</small></div><div style="display:flex; gap:8px; margin:8px 0;"><button class="ghost" style="padding:5px;" onclick="editHarga('${item.barcode}')">Edit Harga</button><button class="danger" style="padding:5px;" onclick="hapusProduk('${item.barcode}')">Hapus Produk</button></div><div style="display:flex; justify-content:space-between; margin:6px 0;"><span>Rp ${item.harga.toLocaleString('id-ID')} x ${item.qty}</span><span><b>Rp ${sub.toLocaleString('id-ID')}</b></span></div><div style="display:flex; gap:8px;"><button class="ghost" onclick="ubahQty(${i}, -1)">-</button><button class="ghost" onclick="ubahQty(${i}, 1)">+</button><button class="danger" onclick="hapusKeranjang(${i})">Hapus dari Keranjang</button></div></div>`;
   });
   document.getElementById('total').textContent = total.toLocaleString('id-ID');
   hitungKembalian();
@@ -474,7 +491,7 @@ function renderLaporan() {
 
     if (tbody) tbody.innerHTML += `<tr><td>${tgl}</td><td>${t.id}</td><td>${t.items.length} item</td><td>Rp ${t.total.toLocaleString('id-ID')}</td><td>Rp ${hpp.toLocaleString('id-ID')}</td><td>Rp ${laba.toLocaleString('id-ID')}</td><td><button class="ghost" style="padding:5px;" onclick="showStrukScreen(${JSON.stringify(t).replace(/"/g, '&quot;')})">Cetak</button> <button class="danger" style="padding:5px;" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></td></tr>`;
 
-    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div class="card-mobile-row"><span class="card-mobile-label">Tanggal</span><span>${tgl}</span></div><div class="card-mobile-row"><span class="card-mobile-label">No</span><span>${t.id}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Item</span><span>${t.items.length} item</span></div><div class="card-mobile-row"><span class="card-mobile-label">Omzet</span><span>Rp ${t.total.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">HPP</span><span>Rp ${hpp.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Laba</span><span style="color:var(--accent); font-weight:600;">Rp ${laba.toLocaleString('id-ID')}</span></div><div style="display:flex; gap:8px; margin-top:8px;"><button class="ghost" onclick="showStrukScreen(${JSON.stringify(t).replace(/"/g, '&quot;')})">Cetak Struk</button><button class="danger" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></div></div>`;
+    if (mobileDiv) mobileDiv.innerHTML += `<div class="card-mobile"><div class="card-mobile-row"><span class="card-mobile-label">Tanggal</span><span>${tgl}</span></div><div class="card-mobile-row"><span class="card-mobile-label">No</span><span>${t.id}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Item</span><span>${t.items.length} item</span></div><div class="card-mobile-row"><span class="card-mobile-label">Omzet</span><span>Rp ${t.total.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">HPP</span><span>Rp ${hpp.toLocaleString('id-ID')}</span></div><div class="card-mobile-row"><span class="card-mobile-label">Laba</span><span style="color:var(--accent); font-weight:600;">Rp ${laba.toLocaleString('id-ID')}</span></div><div style="display:flex; gap:8px; margin-top:8px;"><button class="ghost" onclick="showStrukScreen(${JSON.stringify(t).replace(/"/g, '&quot;')})">Lihat Struk</button><button class="danger" onclick="hapusTransaksi(${transaksi.length - 1 - idx})">Hapus</button></div></div>`;
   });
 
   document.getElementById('ringkasanLaporan').innerHTML = `<b>Transaksi:</b> ${data.length} | <b>Omzet:</b> Rp ${totalOmzet.toLocaleString('id-ID')} | <b>HPP:</b> Rp ${totalHPP.toLocaleString('id-ID')} | <b>Laba:</b> Rp ${(totalOmzet - totalHPP).toLocaleString('id-ID')}`;
